@@ -55,25 +55,25 @@
         </div>
     <div class="actionContainer opacity" id="toolbar" style="display: none; opacity: 0;">
         <div style="display: flex; align-items: center;">
-            <div class="imgBtn" data-action="back" style="margin-right: 30px;">
+            <div class="imgBtn" data-action="back" style="margin-right: 30px;" data-hover="Previous folder">
                 <img data-fetch="prev" class="disabled" height="32px" width="32px">
             </div>
-            <div class="imgBtn" data-action="search" id="tempsearch">
+            <div class="imgBtn" data-action="search" id="tempsearch" data-hover="Search items">
                 <img data-fetch="search" height="32px" width="32px">
             </div>
-            <div class="imgBtn" data-action="addFile">
+            <div class="imgBtn" data-action="addFile" data-hover="Add a file">
                 <img data-fetch="adddoc" height="32px" width="32px">
             </div>
-            <div class="imgBtn" data-action="folderDialog">
+            <div class="imgBtn" data-action="folderDialog" data-hover="Add or create a folder">
                 <img data-fetch="addfolder" height="32px" width="32px">
             </div>
-            <div class="imgBtn" data-action="downloadDialog">
+            <div class="imgBtn" data-action="downloadDialog" data-hover="Download or extract zip file">
                 <img data-fetch="download" height="32px" width="32px">
             </div>
-            <div class="imgBtn" data-action="settings">
+            <div class="imgBtn" data-action="settings" data-hover="Show settings">
                 <img data-fetch="settings" height="32px" width="32px">
             </div>
-            <div class="imgBtn" data-action="next" style="margin-left: 30px;">
+            <div class="imgBtn" data-action="next" style="margin-left: 30px;" data-hover="Next folder">
                 <img data-fetch="next" class="disabled" height="32px" width="32px">
             </div>
         </div>
@@ -214,6 +214,7 @@
             <div id="jsMediaContainer" style="height: 40vh;"></div>
         </div>
     </div>
+    <div id="hoverContainer"></div>
     <script src="./jszip.js"></script>
     <script src="./script.js"></script>
 </body>

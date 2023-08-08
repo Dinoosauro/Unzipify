@@ -309,3 +309,18 @@ border-radius: 8px;
     text-align: center;
 display: block;
 }
+.hoverDialog {
+    position: absolute;
+    z-index: 200;
+    background-color: var(--accent);
+    border-radius: 16px;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+.hoverContainer {
+    border-radius: 16px;
+    backdrop-filter: brightness(50%);
+    -webkit-backdrop-filter: brightness(50%);
+    padding: 15px;
+}

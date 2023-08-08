@@ -4,7 +4,7 @@ if ('serviceWorker' in navigator) {
         registration = await navigator.serviceWorker.register('./service-worker.js',);
     };
     registerServiceWorker();
-} 
+}
 let appVersion = "1.0.0";
 fetch("https://dinoosauro.github.io/UpdateVersion/unzipify-updatecode", { cache: "no-store" }).then((res) => res.text().then((text) => { if (text.replace("\n", "") !== appVersion) if (confirm(`There's a new version of Unzipify. Do you want to update? [${appVersion} --> ${text.replace("\n", "")}]`)) { caches.delete("unzipify-cache"); location.reload(true); } }).catch((e) => { console.error(e) })).catch((e) => console.error(e));
 document.getElementById("versionId").textContent = appVersion;
@@ -35,8 +35,9 @@ document.getElementById("startNew").addEventListener("click", () => {
     setTimeout(() => {
         document.getElementById("introduction").style.display = "none";
         document.getElementById("toolbar").style.display = "flex";
-        setTimeout(() => {document.getElementById("toolbar").style.opacity = "1"}, 15);   
-    }, 250);        
+        setTimeout(() => { generateHover() }, 150);
+        setTimeout(() => { document.getElementById("toolbar").style.opacity = "1" }, 15);
+    }, 250);
 })
 document.getElementById("fileBtn").addEventListener("click", () => {
     let input = document.createElement("input");
@@ -51,9 +52,10 @@ document.getElementById("fileBtn").addEventListener("click", () => {
                 setTimeout(() => {
                     document.getElementById("introduction").style.display = "none";
                     document.getElementById("toolbar").style.display = "flex";
-                    setTimeout(() => {document.getElementById("toolbar").style.opacity = "1"}, 15);   
-                improvedReader();
-                }, 250);        
+                    setTimeout(() => { generateHover() }, 150);
+                    setTimeout(() => { document.getElementById("toolbar").style.opacity = "1" }, 15);
+                    improvedReader();
+                }, 250);
             });
         });
         file.readAsArrayBuffer(input.files[0]);
@@ -144,7 +146,7 @@ let mediaContainer = {
         indexType: "innerHTML"
     },
     code: {
-        extension: ["js", "html", "css", "py", "cpp", "cs", "applescript", "bat", "c", "ino", "erb", "go", "kt", "lua", "o", "php", "pl", "ps1", "rb", "rs", "vb", "vba", "vbs", "spct", "xml", "sh", "java", "json","vbproj", "vdproj", "vcproj", "csproj", "xaml", "swift"],
+        extension: ["js", "html", "css", "py", "cpp", "cs", "applescript", "bat", "c", "ino", "erb", "go", "kt", "lua", "o", "php", "pl", "ps1", "rb", "rs", "vb", "vba", "vbs", "spct", "xml", "sh", "java", "json", "vbproj", "vdproj", "vcproj", "csproj", "xaml", "swift"],
         containerFormat: document.createElement("div"),
         indexType: "innerHTML"
     },
@@ -155,7 +157,7 @@ let mediaContainer = {
     }
 }
 document.querySelector("[data-action=back]").addEventListener("click", () => {
-    if (document.querySelector("[data-action=back]").classList.contains("disabled")) return;
+    if (document.querySelector("[data-fetch=prev]").classList.contains("disabled")) return;
     folderSuccessionLoaded["container"].nextLoadItems = [];
     folderSuccessionLoaded.nextRef.unshift(folderSuccessionLoaded.ref);
     folderSuccessionLoaded.nextStruct.unshift(folderSuccessionLoaded.structure);
@@ -214,7 +216,7 @@ function getOptionalLibraries(url) {
     });
 }
 function addAnimation(item, reverse) {
-    if (typeof(item) === "string") item = document.getElementById(item);
+    if (typeof (item) === "string") item = document.getElementById(item);
     item.style.opacity = "1";
     item.style.display = "block";
     if (!reverse) item.classList.add("displayDialog"); else item.classList.add("revDisplayDialog");
@@ -223,65 +225,65 @@ function previewHandler(value, imgIcon) {
     if (value.endsWith("pdf")) document.getElementById("pdfControlContainer").style.display = "flex"; else document.getElementById("pdfControlContainer").style.display = "none";
     document.getElementById("fileSpinner").style.display = "block";
     if (document.getElementById("jsMediaContainer").firstChild !== null) URL.revokeObjectURL(document.getElementById("jsMediaContainer").firstChild.src);
-            document.getElementById("jsMediaContainer").innerHTML = "";
-            addAnimation("previewDialog", document.getElementById("previewDialog").style.top === "");
-            let fetchElement = mediaContainer[imgIcon].containerFormat;
-            document.getElementById("fileName").textContent = value;
-            zip.file(value).async("arraybuffer").then(async (buffer) => {
-                switch (mediaContainer[imgIcon].indexType) {
-                    case "src":
-                        fetchElement.setAttribute("controls", "");
-                        fetchElement.classList.add("contentRespect");
-    document.getElementById("fileSpinner").style.display = "none";
-                        if (mediaContainer[imgIcon].askType !== undefined) {
-                            switch (mediaContainer[imgIcon].askType) {
-                                case "audio/*":
-                                    fetchElement.src = URL.createObjectURL(new Blob([buffer], {type: mediaContainer.audio.mimeRefer[mediaContainer.audio.extension.indexOf(value.substring(value.lastIndexOf(".") + 1))]})); 
-                                    break;
-                            }
+    document.getElementById("jsMediaContainer").innerHTML = "";
+    addAnimation("previewDialog", document.getElementById("previewDialog").style.top === "");
+    let fetchElement = mediaContainer[imgIcon].containerFormat;
+    document.getElementById("fileName").textContent = value;
+    zip.file(value).async("arraybuffer").then(async (buffer) => {
+        switch (mediaContainer[imgIcon].indexType) {
+            case "src":
+                fetchElement.setAttribute("controls", "");
+                fetchElement.classList.add("contentRespect");
+                document.getElementById("fileSpinner").style.display = "none";
+                if (mediaContainer[imgIcon].askType !== undefined) {
+                    switch (mediaContainer[imgIcon].askType) {
+                        case "audio/*":
+                            fetchElement.src = URL.createObjectURL(new Blob([buffer], { type: mediaContainer.audio.mimeRefer[mediaContainer.audio.extension.indexOf(value.substring(value.lastIndexOf(".") + 1))] }));
+                            break;
+                    }
+                    document.getElementById("fileSpinner").style.display = "none";
+                } else {
+                    switch (value.substring(value.lastIndexOf(".") + 1)) {
+                        case "svg":
+                            fetchElement.src = URL.createObjectURL(new Blob([buffer], { type: "image/svg+xml" }));
                             document.getElementById("fileSpinner").style.display = "none";
-                        } else {
-                            switch (value.substring(value.lastIndexOf(".") + 1)) {
-                                case "svg":
-                                fetchElement.src = URL.createObjectURL(new Blob([buffer], { type: "image/svg+xml" }));
-    document.getElementById("fileSpinner").style.display = "none";
-                                    break;
-                                case "heif": case "heic":
-                                    await getOptionalLibraries("./heic2any.js");
-                                    let blob = new Blob([buffer]);
-                                    heic2any({blob}).then((blobResult) => {fetchElement.src = URL.createObjectURL(blobResult); document.getElementById("fileSpinner").style.display = "none";});
-                                    break;
-                                default: 
-                                    fetchElement.src = URL.createObjectURL(new Blob([buffer]));
-    document.getElementById("fileSpinner").style.display = "none";
-                                    break;
-                            }
-                        }
-                        break;
-                    case "innerHTML":
-                        fetchElement.classList.add("textPreview");
-                        if (value.substring(value.lastIndexOf(".") + 1) === "md") {
-                            await getOptionalLibraries("https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js");
-                            let md = window.markdownit();
-                            fetchElement.innerHTML = md.render(new TextDecoder().decode(new Uint8Array(buffer)));
-                        } else {
-                            fetchElement.style = "white-space: pre";
-                            fetchElement.textContent = (new TextDecoder().decode(new Uint8Array(buffer)));
-                        }
-    document.getElementById("fileSpinner").style.display = "none";
-                        break;
-                    case "pdf":
-                        await getOptionalLibraries("https://cdn.jsdelivr.net/npm/pdfjs-dist@3.9.179/build/pdf.min.js");
-                        fetchElement.id = "pdfCanvas";
-                        fetchElement.style = "width: 100%; height: auto; border-radius: 8px;"
-                        let pdfFetch = pdfjsLib.getDocument(buffer);
-                        pdfFetch.promise.then((pdf) => {
-                            PDFUtil[0] = pdf;
-                            PDFExtract();
-                        })
+                            break;
+                        case "heif": case "heic":
+                            await getOptionalLibraries("./heic2any.js");
+                            let blob = new Blob([buffer]);
+                            heic2any({ blob }).then((blobResult) => { fetchElement.src = URL.createObjectURL(blobResult); document.getElementById("fileSpinner").style.display = "none"; });
+                            break;
+                        default:
+                            fetchElement.src = URL.createObjectURL(new Blob([buffer]));
+                            document.getElementById("fileSpinner").style.display = "none";
+                            break;
+                    }
                 }
-                document.getElementById("jsMediaContainer").append(fetchElement);
-            });
+                break;
+            case "innerHTML":
+                fetchElement.classList.add("textPreview");
+                if (value.substring(value.lastIndexOf(".") + 1) === "md") {
+                    await getOptionalLibraries("https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js");
+                    let md = window.markdownit();
+                    fetchElement.innerHTML = md.render(new TextDecoder().decode(new Uint8Array(buffer)));
+                } else {
+                    fetchElement.style = "white-space: pre";
+                    fetchElement.textContent = (new TextDecoder().decode(new Uint8Array(buffer)));
+                }
+                document.getElementById("fileSpinner").style.display = "none";
+                break;
+            case "pdf":
+                await getOptionalLibraries("https://cdn.jsdelivr.net/npm/pdfjs-dist@3.9.179/build/pdf.min.js");
+                fetchElement.id = "pdfCanvas";
+                fetchElement.style = "width: 100%; height: auto; border-radius: 8px;"
+                let pdfFetch = pdfjsLib.getDocument(buffer);
+                pdfFetch.promise.then((pdf) => {
+                    PDFUtil[0] = pdf;
+                    PDFExtract();
+                })
+        }
+        document.getElementById("jsMediaContainer").append(fetchElement);
+    });
 }
 document.querySelector("[data-action=prevPage]").addEventListener("click", () => {
     if (PDFUtil[1] === 1) return;
@@ -295,40 +297,40 @@ document.querySelector("[data-action=nextPage]").addEventListener("click", () =>
 function PDFExtract() {
     let canvas = document.getElementById("pdfCanvas");
     PDFUtil[0].getPage(PDFUtil[1]).then((page) => {
-        let viewport = page.getViewport({ scale: PDFUtil[3], });    
+        let viewport = page.getViewport({ scale: PDFUtil[3], });
         let outputScale = window.devicePixelRatio || 1;
         if (PDFUtil[3] !== 1) canvas.style = `width: ${viewport.width}px; height: ${viewport.height}px; overflow: scroll; border-radius: 8px;`; else "width: 100%; height: auto; border-radius: 8px;";
         canvas.width = Math.floor(viewport.width * outputScale);
         canvas.height = Math.floor(viewport.height * outputScale);
         let transform = outputScale !== 1
-        ? [outputScale, 0, 0, outputScale, 0, 0]
-        : null;
+            ? [outputScale, 0, 0, outputScale, 0, 0]
+            : null;
 
-    let renderContext = {
-        canvasContext: canvas.getContext("2d"),
-        transform: transform,
-        viewport: viewport
-    };
-    page.render(renderContext);
-    document.getElementById("fileSpinner").style.display = "none";
-}).catch((ex) => {
-    console.warn(ex);
-    document.querySelector("[data-action=prevPage]").click();
-})
+        let renderContext = {
+            canvasContext: canvas.getContext("2d"),
+            transform: transform,
+            viewport: viewport
+        };
+        page.render(renderContext);
+        document.getElementById("fileSpinner").style.display = "none";
+    }).catch((ex) => {
+        console.warn(ex);
+        document.querySelector("[data-action=prevPage]").click();
+    })
 }
 function moveDialog(dialogName, preview, contentImg) {
     document.getElementById(dialogName).style.marginLeft = "20vw";
     document.getElementById(dialogName).style.position = "absolute";
     for (let item of ["top", "left", "right", "bottom"]) document.getElementById(dialogName).style[item] = "";
     if (preview.getBoundingClientRect().y < document.body.offsetHeight * 60 / 100) document.getElementById(dialogName).style.top = `${preview.getBoundingClientRect().top + 15}px`; else document.getElementById(dialogName).style.bottom = `${preview.getBoundingClientRect().bottom + 15}px`;
-   if (contentImg.getBoundingClientRect().left < document.body.offsetWidth * 40 / 100) document.getElementById(dialogName).style.left = `${contentImg.getBoundingClientRect().left + 15}px`; else document.getElementById(dialogName).style.right = `${contentImg.getBoundingClientRect().right - contentImg.getBoundingClientRect().left + 15}px`;
+    if (contentImg.getBoundingClientRect().left < document.body.offsetWidth * 40 / 100) document.getElementById(dialogName).style.left = `${contentImg.getBoundingClientRect().left + 15}px`; else document.getElementById(dialogName).style.right = `${contentImg.getBoundingClientRect().right - contentImg.getBoundingClientRect().left + 15}px`;
 
 }
 function createBtn(contentName, value, isFolder, prepend, searchAppend) {
     let btnContainer = document.createElement("div");
     btnContainer.classList.add("btnContainer");
     if (!searchAppend) {
-        if (folderSuccessionLoaded.position === "left") {btnContainer.classList.add("rightMargin"); folderSuccessionLoaded.position = "right";} else {btnContainer.classList.add("leftMargin"); folderSuccessionLoaded.position = "left";}
+        if (folderSuccessionLoaded.position === "left") { btnContainer.classList.add("rightMargin"); folderSuccessionLoaded.position = "right"; } else { btnContainer.classList.add("leftMargin"); folderSuccessionLoaded.position = "left"; }
     } else btnContainer.style = "width: 100%";
     let leftBtnName = document.createElement("div");
     leftBtnName.classList.add("leftContent");
@@ -349,7 +351,7 @@ function createBtn(contentName, value, isFolder, prepend, searchAppend) {
         font: ["ttf", "otf", "abf", "ttc", "woff", "woff1", "woff2"],
         gaming: ["wbfs", "wad", "wdf", "gcm", "nds", "dsi", "3ds", "cia", "gb", "gbc", "gba", "n64", "nes", "fds", "sms", "smd", "smc", "078", "sfc", "fig", "npc", "ngp", "ngc", "pss", "mca", "nbt", "map", "osr", "osu", "ecm", "cso", "cdi", "gdi", "gen", "gcz", "ps2", "mcr", "mpk", "cg", "glsl", "hlsl"],
         image: ["tiff", "tif", "heic", "heif", "avif", "jxr", "jp2", "wmf", "odg", "cdr", "ai", "dxf", "heic", "heif", "avif", "gif", "jpeg", "jpg", "jfif", "png", "svg", "webp", "bmp", "ico"],
-        code: ["js", "html", "css", "py", "cpp", "cs", "applescript", "bat", "c", "ino", "erb", "go", "kt", "lua", "o", "php", "pl", "ps1", "rb", "rs", "vb", "vba", "vbs", "spct", "xml", "sh", "java", "json","vbproj", "vdproj", "vcproj", "csproj", "xaml", "swift"],
+        code: ["js", "html", "css", "py", "cpp", "cs", "applescript", "bat", "c", "ino", "erb", "go", "kt", "lua", "o", "php", "pl", "ps1", "rb", "rs", "vb", "vba", "vbs", "spct", "xml", "sh", "java", "json", "vbproj", "vdproj", "vcproj", "csproj", "xaml", "swift"],
         video: ["mp4", "mov", "ogg", "webm", "ts"],
         audio: ["flac", "mp3", "opus", "wav", "aac", "m4a"],
         markdown: ["md"],
@@ -357,9 +359,9 @@ function createBtn(contentName, value, isFolder, prepend, searchAppend) {
     for (let key in generalFormatDefinition) if (generalFormatDefinition[key].indexOf(value.substring(value.lastIndexOf(".") + 1)) !== -1) imgIcon = key;
     if (isFolder) imgIcon = "folder";
     getImg(imgIcon, contentImg);
-    
+
     let rightContainer = document.createElement("div");
-    let previewExtension = []; // ...mediaContainer.video.extension, ...mediaContainer.audio.extension, ...mediaContainer.image.extension, ...mediaContainer.markdown.extension, ...mediaContainer.code.extension, ...mediaContainer.pdf.extension
+    let previewExtension = [];
     for (let item in mediaContainer) previewExtension.push(...mediaContainer[item].extension);
     if (previewExtension.indexOf(value.substring(value.lastIndexOf(".") + 1).toLowerCase()) !== -1) {
         let preview = createRightButton("eye");
@@ -369,13 +371,13 @@ function createBtn(contentName, value, isFolder, prepend, searchAppend) {
         })
         rightContainer.append(preview);
     }
-    if (!searchAppend) { 
+    if (!searchAppend) {
         let deleteBtn = createRightButton("delete");
         deleteBtn.addEventListener("click", () => {
             zip.remove(value);
             refreshEntry();
         });
-        rightContainer.append(deleteBtn);    
+        rightContainer.append(deleteBtn);
     }
     rightContainer.classList.add("rightFlex");
     let download = createRightButton("download");
@@ -437,6 +439,7 @@ function createAlert(contentName, extraContent, alertId) {
     noShow.style.textDecoration = "underline";
     noShow.textContent = "Don't show again";
     noShow.style.marginLeft = "20px";
+    noShow.style.cursor = "pointer";
     noShow.addEventListener("click", () => {
         if (localStorage.getItem("Unzipify-noAlert") === null) localStorage.setItem("Unzipify-noAlert", `-${alertId}`); else localStorage.setItem("Unzipify-noAlert", `${localStorage.getItem("Unzipify-noAlert")}-${alertId}`);
         removeItem();
@@ -446,9 +449,9 @@ function createAlert(contentName, extraContent, alertId) {
     alertContainer.append(noShow);
     document.body.append(alertContainer);
     function removeItem() {
-        setTimeout(() => {alertContainer.remove()}, 210); alertContainer.style.opacity = "0";
+        setTimeout(() => { alertContainer.remove() }, 210); alertContainer.style.opacity = "0";
     }
-    setTimeout(() => {alertContainer.style.opacity = "1"; setTimeout(() => {removeItem();}, parseInt(document.getElementById("alertChange").value))}, 15);
+    setTimeout(() => { alertContainer.style.opacity = "1"; setTimeout(() => { removeItem(); }, parseInt(document.getElementById("alertChange").value)) }, 15);
 }
 function downloadItem(blob, contentName) {
     let a = document.createElement("a");
@@ -477,14 +480,14 @@ function createRightButton(icon, customColor, backgroundColor) {
     return container;
 }
 function removeAnimation(item) {
-    if (typeof(item) === "string") item = document.getElementById(item);
+    if (typeof (item) === "string") item = document.getElementById(item);
     let addClass = "noDisplayDialog";
     if (item.classList.contains("revDisplayDialog")) addClass = "revNoDisplayDialog";
     item.classList.remove("displayDialog", "revDisplayDialog");
-    setTimeout(() => {    
-    item.classList.add(addClass);
-    setTimeout(() => {item.classList.remove(addClass); item.style.display = "none"}, 600);
-},15);
+    setTimeout(() => {
+        item.classList.add(addClass);
+        setTimeout(() => { item.classList.remove(addClass); item.style.display = "none" }, 600);
+    }, 15);
 }
 for (let item of document.querySelectorAll("[data-fetch]")) getImg(item.getAttribute("data-fetch"), item);
 document.getElementById("minimizeInner").addEventListener("click", () => {
@@ -517,18 +520,18 @@ document.getElementById("searchItem").addEventListener("input", () => {
 });
 let generalDialogShow = {
     contentClick: [document.getElementById("minimizeFetch"), document.getElementById("tempsearch"), document.getElementById("minimizeFolder"), document.querySelector("[data-action=folderDialog]"), document.querySelector("[data-fetch=folderzip]"), document.querySelector("[data-action=addfolder]"), document.querySelector("[data-action=folderzip]"), document.getElementById("folderCreate"), document.querySelector("[data-action=downloadDialog]"), document.getElementById("minimizeDownload"), document.querySelector("[data-action=download]"), document.querySelector("[data-action=extract]"), document.querySelector("[data-action=settings]"), document.getElementById("minimizeSettings")],
-    show: [false, true, false, true, false, true, false, false, true, false, false, false, true, false], 
+    show: [false, true, false, true, false, true, false, false, true, false, false, false, true, false],
     ref: [document.getElementById("searchContainer"), document.getElementById("searchContainer"), document.getElementById("folderDialog"), document.getElementById("folderDialog"), document.getElementById("newFolderExclusive"), document.getElementById("newFolderExclusive"), document.getElementById("folderDialog"), document.getElementById("folderDialog"), document.getElementById("downloadDialog"), document.getElementById("downloadDialog"), document.getElementById("downloadDialog"), document.getElementById("downloadDialog"), document.getElementById("settingsDialog"), document.getElementById("settingsDialog")]
 };
 for (let i = 0; i < generalDialogShow.contentClick.length; i++) {
     if (generalDialogShow.show[i]) {
         generalDialogShow.contentClick[i].addEventListener("click", () => {
             generalDialogShow.ref[i].style.position = "absolute";
-            if (generalDialogShow.ref[i].id !== "newFolderExclusive" ||  generalDialogShow.ref[i].id === "newFolderExclusive" && !generalDialogShow.show[i]) {
+            if (generalDialogShow.ref[i].id !== "newFolderExclusive" || generalDialogShow.ref[i].id === "newFolderExclusive" && !generalDialogShow.show[i]) {
                 generalDialogShow.ref[i].style.top = `${generalDialogShow.contentClick[i].getBoundingClientRect().bottom + 20}px`;
                 generalDialogShow.ref[i].style.left = `${generalDialogShow.contentClick[i].getBoundingClientRect().left / 2}px`;
             }
-            addAnimation(generalDialogShow.ref[i]);    
+            addAnimation(generalDialogShow.ref[i]);
         })
     } else {
         generalDialogShow.contentClick[i].addEventListener("click", () => { removeAnimation(generalDialogShow.ref[i]) })
@@ -545,12 +548,12 @@ document.querySelector("[data-action=addFile]").addEventListener("click", () => 
 })
 function downloadZipItem(zipContent) {
     zipContent.generateAsync({ type: "blob", compression: "DEFLATE" })
-    .then((content) => {
-        // Append in case it doesn't download!
-        downloadItem(content, "zip.zip");
-        document.getElementById("fileSpinner").style.display = "none";
-        
-    });
+        .then((content) => {
+            // Append in case it doesn't download!
+            downloadItem(content, "zip.zip");
+            document.getElementById("fileSpinner").style.display = "none";
+
+        });
 }
 document.querySelector("[data-action=download]").addEventListener("click", () => {
     document.getElementById("fileSpinner").style.display = "block";
@@ -567,9 +570,9 @@ document.querySelector("[data-action=download]").addEventListener("click", () =>
         function singleLoop() {
             if (items[i].replace(arrayPrev, "") !== "" && !items[i].endsWith("/")) {
                 zip.file(items[i]).async("arraybuffer").then((result) => {
-                    newZip.file(items[i].replace(arrayPrev, ""), new Blob([result]), {createFolders: true});
+                    newZip.file(items[i].replace(arrayPrev, ""), new Blob([result]), { createFolders: true });
                     loopAdvance();
-                })    
+                })
             } else if (items[i].endsWith("/")) {
                 newZip.folder(items[i].substring(0, items[i].lastIndexOf("/")).replace(arrayPrev, ""));
                 loopAdvance();
@@ -589,13 +592,13 @@ function uploadFile(fileArray, isFolder) {
             if (isFolder) relativePath = fileArray[i].webkitRelativePath;
             zip.file(`${folderSuccessionLoaded.ref}${relativePath}`, new Blob([read.result]), { createFolders: true });
             i++;
-            if (i < fileArray.length) readItem(); else {document.getElementById("fileSpinner").style.display = "none"; refreshEntry(); createAlert("Added file into the ZIP!", undefined, "zipAdd");}
+            if (i < fileArray.length) readItem(); else { document.getElementById("fileSpinner").style.display = "none"; refreshEntry(); createAlert("Added file into the ZIP!", undefined, "zipAdd"); }
         }
         read.onerror = (error) => {
             console.warn(error);
             createAlert(`${read.error} [${fileArray[i].name}]`, undefined, "saveFileError");
             i++;
-            if (i < fileArray.length) readItem(); else {document.getElementById("fileSpinner").style.display = "none"; refreshEntry(); createAlert("Added file into the ZIP!", undefined, "zipAdd");}
+            if (i < fileArray.length) readItem(); else { document.getElementById("fileSpinner").style.display = "none"; refreshEntry(); createAlert("Added file into the ZIP!", undefined, "zipAdd"); }
 
         }
         read.readAsArrayBuffer(fileArray[i]);
@@ -655,7 +658,7 @@ document.querySelector("[data-action=extract]").addEventListener("click", async 
     createAlert("Finished extracting zip file!", undefined, "zipExtractFinish");
 });
 document.querySelector("[data-action=next]").addEventListener("click", () => {
-    if (document.querySelector("[data-action=next]").classList.contains("disabled")) return;
+    if (document.querySelector("[data-fetch=next]").classList.contains("disabled")) return;
     document.getElementById("fileSpinner").style.display = "block";
     containerId.innerHTML = "";
     folderSuccessionLoaded.structure = folderSuccessionLoaded.nextStruct[0];
@@ -673,12 +676,12 @@ document.querySelector("[data-action=downloadDialog]").addEventListener("click",
 })
 function addHoverEvents(item) {
     item.addEventListener("mouseover", () => {
-    if (item.classList.contains("disabled")) return;
+        if (item.classList.contains("disabled")) return;
         item.classList.remove("byehover");
         item.classList.add("hover");
     });
     item.addEventListener("mouseleave", () => {
-    if (item.classList.contains("disabled")) return;
+        if (item.classList.contains("disabled")) return;
         item.classList.remove("hover");
         item.classList.add("byehover");
     });
@@ -719,7 +722,7 @@ let customOptions = {
         },
         themeIdentifier: "c"
     }
-],
+    ],
 }
 let customThemes = [];
 if (localStorage.getItem("Unzipify-customThemes") !== null) {
@@ -747,16 +750,16 @@ function createThemeOptions(theme, custom) {
             customThemes.splice(customThemes.findIndex(theme => theme.themeIdentifier === theme.themeIdentifier), 1);
             localStorage.setItem("Unzipify-customThemes", JSON.stringify(customThemes));
             themeContainer.style.maxHeight = "0px";
-  document.getElementById("themeContainer").style.maxHeight = `${parseInt(document.getElementById("themeContainer").style.maxHeight.replace("px", "")) - 60}px`;
- setTimeout(() => {themeContainer.remove()}, 210);
+            document.getElementById("themeContainer").style.maxHeight = `${parseInt(document.getElementById("themeContainer").style.maxHeight.replace("px", "")) - 60}px`;
+            setTimeout(() => { themeContainer.remove() }, 210);
         });
         rightContainer.append(deleteBtn);
     }
     let applyBtn = createRightButton("color", theme.color.accent, theme.color.row);
-    applyBtn.addEventListener("click", () => {checkAndApply(theme)});
+    applyBtn.addEventListener("click", () => { checkAndApply(theme) });
     let downloadBtn = createRightButton("download", theme.color.accent, theme.color.row);
     downloadBtn.addEventListener("click", () => {
-        downloadItem(new Blob([JSON.stringify(theme)], {type: "application/json"}), `${theme.name}-exported.json`);
+        downloadItem(new Blob([JSON.stringify(theme)], { type: "application/json" }), `${theme.name}-exported.json`);
     })
     rightContainer.classList.add("rightFlex");
     rightContainer.append(downloadBtn, applyBtn);
@@ -790,7 +793,7 @@ function checkAndApply(theme, noApply) {
         if (document.querySelector(`[data-change=${colorId}]`) !== null) document.querySelector(`[data-change=${colorId}]`).value = theme.color[colorId];
     }
     if (!noApply) localStorage.setItem("Unzipify-currentTheme", JSON.stringify(theme));
-for (let item of document.querySelectorAll("[data-fetch]")) getImg(item.getAttribute("data-fetch"), item);
+    for (let item of document.querySelectorAll("[data-fetch]")) getImg(item.getAttribute("data-fetch"), item);
 }
 if (localStorage.getItem("Unzipify-currentTheme") !== null) checkAndApply(JSON.parse(localStorage.getItem("Unzipify-currentTheme"))); else checkAndApply(customOptions.defaultThemes[1])
 document.getElementById("importTheme").addEventListener("click", () => {
@@ -807,7 +810,7 @@ document.getElementById("importTheme").addEventListener("click", () => {
     input.click();
 })
 document.querySelector("[data-change=accent]").addEventListener("change", () => {
-for (let item of document.querySelectorAll("[data-fetch]")) getImg(item.getAttribute("data-fetch"), item);
+    for (let item of document.querySelectorAll("[data-fetch]")) getImg(item.getAttribute("data-fetch"), item);
 })
 document.getElementById("alertChange").addEventListener("input", () => {
     localStorage.setItem("Unzipify-alertDuration", document.getElementById("alertChange").value);
@@ -817,12 +820,16 @@ let valueCheck = {
     ref: [document.getElementById("alertChange")],
     changeType: ["value"]
 };
-for (let i = 0; i < valueCheck.localItem.length; i++) if (localStorage.getItem(valueCheck.localItem[i]) !== null) valueCheck.ref[i][valueCheck.changeType[i]] = localStorage.getItem(valueCheck.localItem[i]); 
+for (let i = 0; i < valueCheck.localItem.length; i++) if (localStorage.getItem(valueCheck.localItem[i]) !== null) valueCheck.ref[i][valueCheck.changeType[i]] = localStorage.getItem(valueCheck.localItem[i]);
 document.getElementById("openSource").addEventListener("click", () => {
-    fetch("./OpenSource.md").then((res) => {res.text().then((text) => {getOptionalLibraries("https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js").then(() => {
-        let md = window.markdownit();
-        document.getElementById("openSourceDiv").innerHTML = md.render(text);
-    })})})
+    fetch("./OpenSource.md").then((res) => {
+        res.text().then((text) => {
+            getOptionalLibraries("https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js").then(() => {
+                let md = window.markdownit();
+                document.getElementById("openSourceDiv").innerHTML = md.render(text);
+            })
+        })
+    })
 })
 if (navigator.userAgent.toLowerCase().indexOf("safari") !== -1 && navigator.userAgent.toLowerCase().indexOf("chrome") === -1) {
     document.getElementById("safariStyle").innerHTML = `select {-webkit-appearance: none; background-image: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='${getComputedStyle(document.body).getPropertyValue("--text").replace("#", "%23")}' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>"); background-position: 100% 50%; background-repeat: no-repeat; font-size: 10pt}`;
@@ -839,3 +846,27 @@ document.getElementById("pwaBtn").addEventListener("click", () => {
     });
 });
 if (window.matchMedia('(display-mode: standalone)').matches) document.getElementById("pwaTab").style.display = "none";
+function generateHover() {
+    document.getElementById("hoverContainer").innerHTML = "";
+    for (let item of document.querySelectorAll("[data-hover]")) {
+        let hoverContainer = document.createElement("div");
+        hoverContainer.classList.add("hoverDialog");
+        hoverContainer.style.top = `${item.getBoundingClientRect().bottom + 15}px`;
+        hoverContainer.style.left = `${item.getBoundingClientRect().left + 15}px`;
+        let hoverTextContainer = document.createElement("div");
+        hoverTextContainer.classList.add("hoverContainer");
+        let hoverText = document.createElement("l");
+        hoverText.textContent = item.getAttribute("data-hover");
+        item.addEventListener("mouseenter", () => {
+            hoverContainer.style.display = "block";
+            setTimeout(() => { hoverContainer.style.opacity = "1" }, 15);
+        });
+        item.addEventListener("mouseleave", () => {
+            setTimeout(() => { hoverContainer.style.display = "none" }, 210);
+            hoverContainer.style.opacity = "0";
+        });
+        hoverTextContainer.append(hoverText);
+        hoverContainer.append(hoverTextContainer);
+        document.getElementById("hoverContainer").append(hoverContainer);
+    }
+}
