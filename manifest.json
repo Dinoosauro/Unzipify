@@ -1,0 +1,16 @@
+{
+    "name": "Unzipify",
+    "short_name": "Unzipify",
+    "start_url": "index.html",
+    "display": "standalone",
+    "background_color": "#191919",
+    "theme_color": "#81C784",
+    "orientation": "landscape-primary",
+    "icons": [
+        {
+            "src": "./assets/logo.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ]
+}
