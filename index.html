@@ -216,5 +216,7 @@
     </div>
     <div id="hoverContainer"></div>
     <script src="./jszip.js"></script>
-    <script src="./script.js"></script>
+    <script>// Adding separated JS files if debugging with local server
+        if (location.hostname === "localhost" && location.pathname.indexOf("dist") === -1) {let a = document.createElement("script"); a.src = "./script.js"; document.body.append(a);}
+    </script>
 </body>
