@@ -56,10 +56,13 @@ h1,h2,h3,h4 {
     border-radius: 8px;
     margin-bottom: 15px;
 }
+#fileContainer > div{
+    flex: 1 0 400px;
+    margin-left: 10px;
+}
 .btnContainer {
     background-color: var(--row);
     border-radius: 8px;
-    width: 49%;
     height: 45px;
     margin-bottom: 15px;
 }
@@ -122,9 +125,6 @@ h1,h2,h3,h4 {
     overflow-y: scroll;
     border-radius: 8px;
 }
-.rightMargin {
-    margin-right: 1%;
-}
 #introduction {
     display: flex;
 }
@@ -141,15 +141,6 @@ h1,h2,h3,h4 {
     float: right;
 }
 @media only screen and (max-width: 750px) {
-    .leftMargin {
-        margin-left: 0%;
-    }
-    .rightMargin {
-        margin-right: 0%;
-    }
-    .btnContainer {
-        width: 100%;
-    }
     .card {
         width: 100%;
         margin-bottom: 20px;

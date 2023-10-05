@@ -11,6 +11,7 @@
     <meta name="theme-color" content="#81C784" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
     <link rel="icon" href="./assets/logo.png">
+    <title>Unzipify - Manage zip files</title>
 </head>
 
 <body>
@@ -118,6 +119,11 @@
                 <i class="center">Change alert duration</i><br><br>
                 <l>Duration (in milliseconds):</l><input type="number" id="alertChange" value="5000" style="margin-left: 10px; background-color: var(--background);">
             </div><br>
+            <div class="settingTab">
+                <h3 class="center">Lazy loading</h3>
+                <i class="center">Change option(s) about how many entries will be displayed</i><br><br>
+                <l>When new items are loaded, go back to </l><input type="number" max="100" id="lazyLoadingMove" style="margin-left: 10px; background-color: var(--background);"><l>% of the div.</l><br><br><i>Put a value from 0 to 10, or from 90 to 100 to not change anything.</i>
+            </div>
             <div class="settingTab" id="pwaTab">
                 <h3>Install as a PWA</h3>
                 <l>Open Unzipify also offline by instaling it as a Progressive Web Application</l><br><br>

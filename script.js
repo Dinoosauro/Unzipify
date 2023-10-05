@@ -27,12 +27,12 @@ let folderSuccessionLoaded = { // An object that will contain specific informati
         prevLoadItems: [],
         currentItems: [],
     },
-    position: "left", // If the next ZIP file should be appended at the left or at the right
     isNew: false
 };
 document.getElementById("startNew").addEventListener("click", () => { // Creates a new JSZIP file
     folderSuccessionLoaded.isNew = true;
     document.getElementById("introduction").style.opacity = 0;
+    document.title = "New File - Unzipify";
     setTimeout(() => {
         // Display toolbar
         document.getElementById("introduction").style.display = "none";
@@ -50,6 +50,7 @@ document.getElementById("fileBtn").addEventListener("click", () => { // Choose a
         file.addEventListener("load", () => {
             zip.loadAsync(file.result).then((fileArray) => { // Read the zip file
                 document.getElementById("introduction").style.opacity = 0;
+                document.title = `${input.files[0].name.substring(0, input.files[0].name.lastIndexOf("."))} - Unzipify`
                 totalFiles = fileArray.files; // Set totalFiles an the array with all the zip files
                 setTimeout(() => {
                     // Display the toolbar
@@ -106,6 +107,7 @@ function scrollLogic(container, connection, search) { // The function that manag
             createBtn(readyValue(folderSuccessionLoaded[connection].nextLoadItems[i][0]), folderSuccessionLoaded[connection].nextLoadItems[i][0], folderSuccessionLoaded[connection].nextLoadItems[i][1], undefined, search); // Create a new file div
         }
         folderSuccessionLoaded[connection].nextLoadItems.splice(0, getMaxScroll); // Delete the shown item from the nextLoad item
+        if (parseInt(document.getElementById("lazyLoadingMove").value) < 90 && parseInt(document.getElementById("lazyLoadingMove").value) > 10) container.scrollTo({top: container.scrollTop * document.getElementById("lazyLoadingMove").value / 100}); // If the user has enabled custom scrolling for lazy loading, it'll go back to that percentage.
     } else if (percentage < 10) { // Load previous items
         let getMinScroll = 25; // Default more items loading
         if (getMinScroll > folderSuccessionLoaded[connection].prevLoadItems.length) getMinScroll = folderSuccessionLoaded[connection].prevLoadItems.length; // If there aren't as many items to add
@@ -119,6 +121,7 @@ function scrollLogic(container, connection, search) { // The function that manag
             createBtn(readyValue(folderSuccessionLoaded[connection].prevLoadItems[folderSuccessionLoaded[connection].prevLoadItems.length - i - 1][0]), folderSuccessionLoaded[connection].prevLoadItems[folderSuccessionLoaded[connection].prevLoadItems.length - i - 1][0], folderSuccessionLoaded[connection].prevLoadItems[folderSuccessionLoaded[connection].prevLoadItems.length - i - 1][1], true, search); // Create a new file div, adding it at the top of the item
         }
         folderSuccessionLoaded[connection].prevLoadItems.splice(folderSuccessionLoaded[connection].prevLoadItems.length - getMinScroll, getMinScroll);
+        if (parseInt(document.getElementById("lazyLoadingMove").value) < 90 && parseInt(document.getElementById("lazyLoadingMove").value) > 10) container.scrollTo({top: container.scrollTop * document.getElementById("lazyLoadingMove").value / 100}); // If the user has enabled custom scrolling for lazy loading, it'll go back to that percentage.
     }
 }
 containerId.addEventListener("scroll", () => { // Add lazy loading for scrolling the container
@@ -183,7 +186,6 @@ document.querySelector("[data-action=back]").addEventListener("click", () => { /
     showItems(); // Show the items in the "new" folder
 })
 function cleanItems(search) { // Delete objects that are tied to a single folder "exploration"
-    folderSuccessionLoaded.position = "left";
     let containerType = search ? "search" : "container";
     folderSuccessionLoaded[containerType].currentItems = [];
     folderSuccessionLoaded[containerType].nextLoadItems = [];
@@ -335,7 +337,6 @@ function createBtn(contentName, value, isFolder, prepend, searchAppend) { // The
     let btnContainer = document.createElement("div");
     btnContainer.classList.add("btnContainer");
     if (!searchAppend) { // With search, each item has its own row. Otherwise, an item will be added at the left, and another at the right
-        if (folderSuccessionLoaded.position === "left") { btnContainer.classList.add("rightMargin"); folderSuccessionLoaded.position = "right"; } else { btnContainer.classList.add("leftMargin"); folderSuccessionLoaded.position = "left"; }
     } else btnContainer.style = "width: 100%";
     let leftBtnName = document.createElement("div");
     leftBtnName.classList.add("leftContent");
@@ -693,7 +694,7 @@ function addHoverEvents(item) { // Add brightness animation when hovering an ite
     });
 }
 for (let item of [...document.querySelectorAll("[data-change]"), ...document.getElementsByClassName("button"), ...document.querySelectorAll("input")]) addHoverEvents(item); // Add the animation to some elements from the DOM
-if (navigator.userAgent.toLowerCase().indexOf("safari") !== -1 && navigator.userAgent.toLowerCase().indexOf("chrome") === -1) document.querySelector("[data-action=extract]").classList.add("disabled"); // Currently, Safari doesn't support the extraction of a zip file directly, soo it'll be disabled
+if (window.showDirectoryPicker === undefined) document.querySelector("[data-action=extract]").classList.add("disabled"); // Currently, some browsers don't support the extraction of a zip file directly on the file system, soo it'll be disabled
 let customOptions = { // An array that will just contain the default themes
     defaultThemes: [{
         name: "Dracula Dark",
@@ -841,6 +842,7 @@ document.getElementById("openSource").addEventListener("click", () => { // Load 
 })
 if (navigator.userAgent.toLowerCase().indexOf("safari") !== -1 && navigator.userAgent.toLowerCase().indexOf("chrome") === -1) {
     document.getElementById("safariStyle").innerHTML = `select {-webkit-appearance: none; background-image: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='${getComputedStyle(document.body).getPropertyValue("--text").replace("#", "%23")}' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>"); background-position: 100% 50%; background-repeat: no-repeat; font-size: 10pt}`;
+    if (localStorage.getItem("Unzipify-LazyLoadingScroll") === null) document.getElementById("lazyLoadingMove").value = 80; // On Safari, there's a bounce animation that would trigger the loading more times. In this way, the div will be scrolled to 80% of its height, and it won't load again.
 } // Add a quick fix to Safari's strange select appearance
 // Install the website as a Progressive Web App
 let installationPrompt;
@@ -879,3 +881,7 @@ function generateHover() { // Add a description of every hovered action.
         document.getElementById("hoverContainer").append(hoverContainer);
     }
 }
+document.getElementById("lazyLoadingMove").addEventListener("input", () => { // Save the lazy loading scroll percentage to the LocalStorage when edited
+    localStorage.setItem("Unzipify-LazyLoadingScroll", document.getElementById("lazyLoadingMove").value);
+})
+if (localStorage.getItem("Unzipify-LazyLoadingScroll") !== null) document.getElementById("lazyLoadingMove").value = localStorage.getItem("Unzipify-LazyLoadingScroll"); // And restore its value
